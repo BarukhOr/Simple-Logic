@@ -10,23 +10,21 @@ HIGHCARD = 'High Card'
 export const constants = {
   pokerSymbols: ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'A', 'J', 'K', 'Q'],
   ranks: [ ROYAL, STRAIGHT, FOURKIND, THREEKIND_ONEPAIR, THREEKIND, TWOPAIR, ONEPAIR, HIGHCARD],
-  // result: { win: 1, loss: 2, tie: 3 },
 }
 
 export const breakDown = pHand => {  
-  let hand = null
+  let rank = null
 
   if (isRoyal(pHand)){
-    hand = ROYAL
+    rank = ROYAL
   } else if (isStraight(pHand)) {
-    hand = STRAIGHT
+    rank = STRAIGHT
   } else if (findMatchingKinds(countCards(pHand))) {
-    hand = findMatchingKinds(countCards(pHand))
-  }
-  
+    rank = findMatchingKinds(countCards(pHand))
+  }  
 
   return {
-    hand,
+    rank,
     highCard: highCard(countCards(pHand)),
   }
 }
@@ -47,10 +45,12 @@ function countCards(pHand =[]) {
 
 function highCard(cardMap = {}) {
   let highCard = null
+  // TODO: This logic does not seem to work consistently
   Object.entries(cardMap).map(entry => {
-    if (entry[1] === 1){
+    if (entry[1] === 1) {
       if (entry[0] > highCard) highCard = entry[0]
     }
+    return null
   })
 
   return highCard
@@ -79,37 +79,43 @@ function isStraight(pHand = []) {
   return isStraight
 }
 
-function isFourOfKind(cardCount = {}) {
-  if(Object.values(cardCount).includes(4)){
-    return true
-  }
-  return false
-}
-
-function isThreeOfKind(cardCount = {}) {
-  if(Object.values(cardCount).includes(4)){
-    return true
-  }
-  return false
-}
-
 function findMatchingKinds(cardCount = {}){
   let countTemp = Object.values(cardCount).sort()
-  if (countTemp.indexOf(4)) {
-    return FOURKIND
-  } else if (countTemp.indexOf(3)) {
-    if (countTemp.indexOf(2)) {
-      return THREEKIND_ONEPAIR
+  let kind = null
+  if (countTemp.includes(4)) {
+    kind = FOURKIND
+  } else if (countTemp.includes(3)) {
+    if (countTemp.includes(2)) {
+      kind = THREEKIND_ONEPAIR
     }else {
-      return THREEKIND
+      kind = THREEKIND
     }
-  } else if (countTemp.indexOf(2)) {
+  } else if (countTemp.includes(2)) {
     if(countTemp[countTemp.indexOf(2)+1] === 2){
-      return TWOPAIR
+      kind = TWOPAIR
     }else {
-      return ONEPAIR
+      kind = ONEPAIR
     }    
   } else {
-    return HIGHCARD
+    kind = HIGHCARD
   }
+  return kind
+}
+
+export function compareHands(p1Breakdown, p2Breakdown){
+  const { rank: p1Rank } = p1Breakdown
+  const { rank: p2Rank } = p2Breakdown
+  const { ranks } = constants
+
+  let result = null
+
+  if (ranks.indexOf(p1Rank) < ranks.indexOf(p2Rank)) {
+    result = "Player 1 won"
+  } else if (ranks.indexOf(p1Rank) > ranks.indexOf(p2Rank)) {
+    result = "Player 2 won"
+  } else {
+    result = "It is a draw"
+  }
+
+  return result
 }
