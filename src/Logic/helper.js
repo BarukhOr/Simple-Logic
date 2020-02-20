@@ -8,7 +8,7 @@ ONEPAIR = 'One Pair',
 HIGHCARD = 'High Card'
 
 export const constants = {
-  pokerSymbols: ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'A', 'J', 'K', 'Q'],
+  pokerSymbols: ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'],
   ranks: [ ROYAL, STRAIGHT, FOURKIND, THREEKIND_ONEPAIR, THREEKIND, TWOPAIR, ONEPAIR, HIGHCARD],
 }
 
